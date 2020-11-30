@@ -1,24 +1,12 @@
-pipeline {
-  agent none
-  stages {
-    stage('index show') {
-      steps {
-        echo "file"
-      }
+node {
+
+    checkout scm
+
+    docker.withRegistry('https://registry.hub.docker.com', 'dockerHub') {
+
+        def customImage = docker.build("rupsdan/dockerwebapp123")
+
+        /* Push the container to the custom Registry */
+        customImage.push()
     }
-    stage('Docker Build') {
-      agent any
-      steps {
-        sh 'docker build -t rupsdan/webapp .'
-      }
-    }
-      stage('Docker Push') {
-      agent any
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh 'docker push shanem/spring-petclinic:latest'
-        }
-      }
-    }
-  }
+}
