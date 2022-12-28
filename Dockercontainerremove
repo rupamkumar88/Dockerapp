@@ -1,2 +1,7 @@
 #Remove all Stop container
-$docker container prune -y
+$yes Y | docker container prune 
+
+#Create CronJob in linux
+$crontab -e
+ * * * * * /path/to/shellscript.sh
+ 
